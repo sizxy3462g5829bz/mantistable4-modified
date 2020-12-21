@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4e55b40cd33b31d6c0466a6f9bd93c7f8053250bdbc7139d39fa86533f0a94f2
-size 638
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "python",
+			"dockerBuild": {
+				"tag": "mantistable4:latest",
+				"dockerfile": "${workspaceFolder}/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug",
+			"dockerRun": {
+				"volumes": [
+					{
+						"localPath": "${workspaceFolder}/django",
+						"containerPath": "/mantistable"
+					}
+				],
+				"network": "lamapi_mantis"
+			},
+			"dependsOn": [
+				"docker-build"
+			],
+			"python": {
+				"file": "/mantistable/cmdline.py"
+			}
+		}
+	]
+}
